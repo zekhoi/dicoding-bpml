@@ -124,14 +124,19 @@ plt.show()
 """## **Try**"""
 
 # Try to predict random sentences
-sentences = df["text"].sample(n = 5).values
+sample = df.sample(n = 5)
+emo = ["anger", "fear", "joy", "love", "sadness", "surprise"]
+sentences = sample["text"].values
+emotions = sample[emo].values
 le = LabelEncoder()
-le.fit(["anger", "fear", "joy", "love", "sadness", "surprise"])
+le.fit(emo)
 
-for sentence in sentences:
+print("[anger, fear, joy, love, sadness, surprise] \n\n")
+for index, sentence in enumerate(sentences):
     print(sentence)
     sentence = tokenizer.texts_to_sequences([sentence])
     sentence = pad_sequences(sentence)
     result = le.inverse_transform(np.argmax(lstm_model.predict(sentence), axis = -1))[0]
     prob =  np.max(lstm_model.predict(sentence))
-    print(f"{result} : {prob}\n\n")
+    emotion = emo[list(emotions[index]).index(1)]
+    print(f"{emotion} => {result} : {prob}\n\n")
